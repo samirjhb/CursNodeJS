@@ -12,7 +12,7 @@ const removeExtension = (filename)=>{
 fs.readdirSync(PATH_ROUTES).filter((file)=>{
     const name = removeExtension(file) // users, storage, tracks
     if (name !== "index") {
-        console.log(`Cargando ruta ${name}`);
+        console.log(`Cargando ruta ${name} 🦾🦾`);
         router.use(`/${name}`, require(`./${file}`)) //http://localhost:3001/api/tracks
         
     }
