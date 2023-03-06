@@ -9,7 +9,7 @@ const {
 const { validatorGetItem } = require("../validators/storage");
 const router = express.Router();
 
-//Ruta  http://localhost:3000/storage
+//Ruta  http://localhost:3000/api/storage
 router.get("/", getItems);
 router.get("/:id",validatorGetItem, getItem);
 router.post("/", uploadMiddleware.single("myfile"), createItem);
