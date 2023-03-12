@@ -1,22 +1,32 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const dbConnect = require("./config/mongo");
-const app = express();
 const morganBody = require("morgan-body");
 const loggerStream = require("./utils/handleLogger");
+const dbConnectNoSql = require("./config/mongo");
+const { dbConnectMysql } = require("./config/mysql");
+const app = express();
+//Data base
+const ENGINE_DB = process.env.ENGINE_DB;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("storage"));
 
-
+// morganBody(app, {
+//   noColors: true,
+//   stream: loggerStream,
+//   skip: function (req, res) {
+//     return res.statusCode < 400;
+//   },
+// });
 morganBody(app, {
-  noColors: true,
-  stream: loggerStream,
   skip: function (req, res) {
-    return res.statusCode < 400;
+    return (
+      [403, 404, 409, 401].includes(res.statusCode) || res.statusCode < 400
+    );
   },
+  stream: loggerStream,
 });
 
 const port = process.env.PORT || 3000;
@@ -29,5 +39,4 @@ app.use("/api", require("./routes"));
 
 app.get("/", (req, res) => res.send("Hello World!"));
 app.listen(port, () => console.log(`App listening on port ${port}!🛸🛸`));
-
-dbConnect();
+(ENGINE_DB === "nosql") ? dbConnectNoSql() : dbConnectMysql();

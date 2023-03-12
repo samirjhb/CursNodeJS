@@ -49,6 +49,7 @@ const createItem = async (req, res) => {
     const data = await storageModel.create(fileData);
     res.send({ data });
   } catch (error) {
+    console.log(error);
     handleHttpError(res, "ERROR_CREATE_ITEM 😪😪");
     
   }

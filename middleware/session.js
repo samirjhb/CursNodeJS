@@ -1,22 +1,30 @@
 const { usersModel } = require("../models");
 const { handleHttpError } = require("../utils/handleError");
 const { verifyToken } = require("../utils/handleJwt");
+const getProperties = require("../utils/handlePropertiesEngine");
+const propetiesKey = getProperties();
 
 const authMiddleware = async (req, res, next) => {
   try {
     if (!req.headers.authorization) {
-        handleHttpError(res, "NEED_SESSION", 401);
-        return
+      handleHttpError(res, "NEED_SESSION", 401);
+      return;
     }
-    const token = req.headers.authorization.split(' ').pop();
+    const token = req.headers.authorization.split(" ").pop();
     const dataToken = await verifyToken(token);
-    if (!dataToken._id) {
-        handleHttpError(res, "ERROR_ID_TOKEN", 401);
-        return
+
+    if (!dataToken) {
+      handleHttpError(res, "NOT_PAYLOAD_DATA", 401);
+      return;
     }
-    const user = await usersModel.findById(dataToken._id)
-    req.user = user
-    next()
+    const query = {
+      [propetiesKey.id]: dataToken[propetiesKey.id],
+    };
+
+    //Depende de la base de dato 
+    const user = await usersModel.findOne(query);
+    req.user = user;
+    next();
   } catch (error) {
     handleHttpError(res, "NOT_SESSION", 401);
   }

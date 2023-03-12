@@ -17,7 +17,7 @@ const checkRol = require("../middleware/rol");
 const router = express.Router();
 
 //Ruta de http://localhost/tracks GET, POST, DELETE, PUT
-router.get("/", authMiddleware, checkRol(["admin"]), getItems);
+router.get("/", authMiddleware,  getItems);
 router.get("/:id", authMiddleware, validatorGetItem, getItem);
 router.post(
   "/",
